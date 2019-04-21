@@ -1,0 +1,26 @@
+{
+  "name": "Javascript Executer",
+  "version": "0.1",
+  "description": "It is a developer tool to execute javascript on any web screen.",
+  "manifest_version": 2,
+  "options_page": "src/option.html",
+  "browser_action": {
+    "default_title": "execute",
+    "default_popup": "src/browser_action.html"
+  },
+  "permissions": [
+    "tabs",
+    "http://*/*",
+    "https://*/*"
+  ],
+  "content_scripts": [
+    {
+      "matches": [
+        "<all_urls>"
+      ],
+      "js": [
+        "src/content_script.js"
+      ]
+    }
+  ]
+}

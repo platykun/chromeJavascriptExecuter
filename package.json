@@ -1,0 +1,11 @@
+{
+  "name": "chrome_javascript_executer",
+  "version": "0.0.1",
+  "description": "chromeJavascriptExecuter",
+  "author": "platykun",
+  "license": "ISC",
+  "dependencies": {
+    "bootstrap": "^4.3.1",
+    "jquery": "^3.4.0"
+  }
+}
