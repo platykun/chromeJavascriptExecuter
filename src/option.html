@@ -6,16 +6,41 @@
 </head>
 </html>
 <body>
-<h1>Option</h1>
+<nav class="navbar bg-primary">
+  <a class="navbar-brand text-white" href="#">javascript管理画面</a>
+</nav>
+<div class="container">
+  <div class="row">
+    <div class="col-12">
+      <h3>登録</h3>
+      <div class="form-group">
+        <label>Title</label>
+        <input class="form-control" name="title"/>
+        <label>JavaScript</label>
+        <textarea class="form-control" name="js" rows="3"></textarea>
+      </div>
+      <div class="float-right">
+        <button type="button" class="btn btn-primary submit pull-right">登録</button>
+      </div>
+    </div>
 
-<form action="">
-  <div class="form-group">
-    <input class="form-control" name="title"/>
-    <textarea class="form-control" name="js" rows="3"></textarea>
+    <div class="col-12">
+      <h3>登録済みjavascript</h3>
+      <table class="table">
+        <thead>
+        <tr>
+          <th scope="col">title</th>
+        </tr>
+        </thead>
+        <tbody id="registerList">
+        <!--<tr>-->
+        <!--<th scope="row">1</th>-->
+        <!--</tr>-->
+        </tbody>
+      </table>
+    </div>
   </div>
-</form>
-
-<button type="button" class="btn btn-primary submit">登録</button>
+</div>
 
 </body>
 <script type="text/javascript" src="option.js"></script>

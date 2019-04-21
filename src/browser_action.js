@@ -2,19 +2,16 @@
 let localStorageItem = localStorage.getItem('jsList');
 let data = localStorageItem === null ? [] : JSON.parse(localStorageItem);
 
-// listを作成する
+// 実行対象のlistを作成する
 for (let i = 0; i < data.length; i++) {
   let title = data[i]["title"];
-  $('ul').append('<li class="list-group-item">' + title + '</li>');
+  $('#registerList').append('<tr><th class="register-content" scope="row">' + title + '</th></tr>');
 }
 
-
-for (let i = 0; i < $('.list-group-item').length; i++) {
-  $('.list-group-item').get(i).addEventListener("click", function () {
-    alert("execute js code to tabs : " + data[i]["js"]);
-
+// Listの項目押下時にjavascriptが発火するように、eventListenerを登録する
+for (let i = 0; i < $('.register-content').length; i++) {
+  $('.register-content').get(i).addEventListener("click", function () {
     chrome.tabs.query({active: true, currentWindow: true}, function (tabs) {
-      alert("queryInfo " + tabs[0].id);
       chrome.tabs.sendMessage(
         tabs[0].id,
         {
