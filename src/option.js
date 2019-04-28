@@ -1,66 +1,66 @@
-/**
- * JSを登録する
- */
-function submitJs() {
-  let localStorageItem = localStorage.getItem('jsList');
-  let data = localStorageItem === null ? [] : JSON.parse(localStorageItem);
+// 共通
+// localStorageのJSが格納されたkey情報
+const localStorageJsListKey = 'jsList';
 
-  let jsValue = $('textarea[name="js"]').val();
-  let titleValue = $('input[name="title"]').val();
+// localStorageに保存されているJS情報リストを取得する
+function findJsListItem() {
+  let localStorageItem = localStorage.getItem(localStorageJsListKey);
+  return localStorageItem === null ? [] : JSON.parse(localStorageItem);
+}
 
-  data.push({js: jsValue, title: titleValue});
-  localStorage.setItem('jsList', JSON.stringify(data));
-  location.reload();
+// JS情報リストを格納する
+function saveJsListItem(data) {
+  localStorage.setItem(localStorageJsListKey, JSON.stringify(data));
+}
+
+// ID属性
+const submitId = 'submit';
+const registerList = 'registerList';
+const modalList = 'modalList';
+
+function getJsListId(index) {
+  return "dataTarget" + index;
+}
+
+function getJsListTitleId(index) {
+  return getJsListId(index) + "title";
+}
+
+function getJsListJsId(index) {
+  return getJsListId(index) + "js";
+}
+
+function getJsListUpdateId(index) {
+  return getJsListId(index) + "update";
+}
+
+function getJsListDeleteId(index) {
+  return getJsListId(index) + "delete";
 }
 
 /**
- * JSを更新する
+ * 登録済みJSタイトルの列となるHTMLを作成する
  *
- * @param index 更新対象のJSのindex番号
+ * @param index index番号
  * @param title タイトル
- * @param js javascript
+ * @returns {string} 登録済みJSタイトルの列
  */
-function updateJs(index, title, js) {
-  let updateTargetJs = localStorage.getItem('jsList');
-  let data = JSON.parse(updateTargetJs);
-  data[index].js = js;
-  data[index].title = title;
-
-  localStorage.setItem('jsList', JSON.stringify(data));
-  location.reload();
+function createTitleListHtml(index, title) {
+  return '<tr>' +
+    '<th scope="row" data-toggle="modal" data-target="#' + getJsListId(index) + '">' + title + '</th>' +
+    '</tr>';
 }
 
 /**
- * JSを削除する
- * @param index 削除対象JSのindex番号
+ * JS編集用のモーダル用のHTMLを作成する
  *
- * lovalStorage以外の更新処理はどうするかは要検討
+ * @param index index番号
+ * @param title 修正後のタイトル
+ * @param js 修正後のjavascript
+ * @returns {string} JS編集用のモーダル
  */
-function deleteJs(index) {
-  let deleteTargetJs = localStorage.getItem('jsList');
-  let data = JSON.parse(deleteTargetJs);
-  data.splice(index, 1);
-
-  localStorage.setItem('jsList', JSON.stringify(data));
-  location.reload();
-}
-
-/**
- * 画面初期表示時、localStorage情報から登録済みjavascript情報を取得する
- */
-let localStorageItem = localStorage.getItem('jsList');
-let data = localStorageItem === null ? [] : JSON.parse(localStorageItem);
-for (let i = 0; i < data.length; i++) {
-  let title = data[i]["title"];
-  const js = data[i]["js"];
-  const dataTarget = "dataTarget" + i;
-
-  $('#registerList').append(
-    '<tr>' +
-    '<th scope="row" data-toggle="modal" data-target="#' + dataTarget + '">' + title + '</th>' +
-    '</tr>');
-  $('#modalList').append(
-    '<div class="modal fade" id="' + dataTarget + '" tabindex="-1" role="dialog" aria-labelledby="label1" aria-hidden="true">' +
+function createUpdateMordalHtml(index, title, js) {
+  return '<div class="modal fade" id="' + getJsListId(index) + '" tabindex="-1" role="dialog" aria-labelledby="label1" aria-hidden="true">' +
     '<div class="modal-dialog" role="document">' +
     '<div class="modal-content">' +
     '<div class="modal-header">' +
@@ -72,30 +72,86 @@ for (let i = 0; i < data.length; i++) {
     '<div class="modal-body">' +
     '<div class="form-group">' +
     '<label>Title</label>' +
-    '<input class="form-control" id=' + dataTarget + 'title name="title" value="' + title + '"/>' +
+    '<input class="form-control" id=' + getJsListTitleId(index) + ' name="title" value="' + title + '"/>' +
     '<label>JavaScript</label>' +
-    '<textarea class="form-control" id=' + dataTarget + 'js name="js" rows="3">' + js + '</textarea>' +
+    '<textarea class="form-control" id=' + getJsListJsId(index) + ' name="js" rows="3">' + js + '</textarea>' +
     '</div>' +
     '</div>' +
     '<div class="modal-footer">' +
-    '<button type="button" class="btn btn-danger" id=' + dataTarget + 'delete data-dismiss="modal">削除</button>' +
-    '<button type="button" class="btn btn-primary" id=' + dataTarget + 'update >更新</button>' +
+    '<button type="button" class="btn btn-danger" id=' + getJsListDeleteId(index) + ' data-dismiss="modal">削除</button>' +
+    '<button type="button" class="btn btn-primary" id=' + getJsListUpdateId(index) + '>更新</button>' +
     '</div>' +
     '</div>' +
     '</div>' +
     '</div>'
-  );
+}
 
-  document.querySelector('#' + dataTarget + 'update')
+
+/**
+ * JSを登録する
+ */
+function submitJs() {
+  let data = findJsListItem();
+
+  let jsValue = $('textarea[name="js"]').val();
+  let titleValue = $('input[name="title"]').val();
+
+  data.push({js: jsValue, title: titleValue});
+  saveJsListItem(data);
+  location.reload();
+}
+
+/**
+ * JSを更新する
+ *
+ * @param index 更新対象のJSのindex番号
+ */
+function updateJs(index) {
+  let updatedTitle = $("#" + getJsListTitleId(index))[0].value;
+  const updatedJs = $("#" + getJsListJsId(index))[0].value;
+
+  let data = findJsListItem();
+  data[index].js = updatedJs;
+  data[index].title = updatedTitle;
+
+  saveJsListItem(data);
+  location.reload();
+}
+
+/**
+ * JSを削除する
+ * @param index 削除対象JSのindex番号
+ *
+ * localStorage以外の更新処理はどうするかは要検討
+ */
+function deleteJs(index) {
+  let data = findJsListItem();
+  data.splice(index, 1);
+
+  saveJsListItem(data);
+  location.reload();
+}
+
+/**
+ * 画面初期表示時、localStorage情報から登録済みjavascript情報を取得する
+ */
+let data = findJsListItem();
+for (let i = 0; i < data.length; i++) {
+  let title = data[i]["title"];
+  const js = data[i]["js"];
+  const dataTarget = getJsListId(i);
+
+  $('#' + registerList).append(createTitleListHtml(i, title));
+  $('#' + modalList).append(createUpdateMordalHtml(i, title, js));
+
+  document.querySelector('#' + getJsListUpdateId(i))
     .addEventListener('click', function () {
-      let updatedTitle = $("#dataTarget" + i + "title")[0].value;
-      const updatedJs = $("#dataTarget" + i + "js")[0].value;
-      updateJs(i, updatedTitle, updatedJs);
+      updateJs(i);
     });
-  document.querySelector('#' + dataTarget + 'delete')
+  document.querySelector('#' + getJsListDeleteId(i))
     .addEventListener('click', function () {
       deleteJs(i);
     });
 }
 
-document.querySelector('#submit').addEventListener('click', submitJs);
+document.querySelector('#' + submitId).addEventListener('click', submitJs);
