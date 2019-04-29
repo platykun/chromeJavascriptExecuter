@@ -3,6 +3,11 @@
   "version": "0.1",
   "description": "It is a developer tool to execute javascript on any web screen.",
   "manifest_version": 2,
+  "icons": {
+    "16": "static/icon16.png",
+    "48": "static/icon48.png",
+    "128": "static/icon128.png"
+  },
   "options_page": "src/option.html",
   "browser_action": {
     "default_title": "execute",
